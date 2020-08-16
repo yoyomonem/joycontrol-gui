@@ -30,8 +30,6 @@ class joycontrolWrapper:
         await self.controller_state.connect()
         self.connected = True
         print("ready to use!")
-        await button_push(self.controller_state, 'up')
-        await button_push(self.controller_state, 'down')
     async def pushButton(self,button):
         button_state = self.controller_state.button_state
         button_state.set_button(button)
