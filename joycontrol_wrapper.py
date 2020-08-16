@@ -27,7 +27,7 @@ class joycontrolWrapper:
                                                      )
         self.controller_state = self.protocol.get_controller_state()
         print("connected to switch initializing controller data")
-        await asyncio.sleep(5)
+        await self.controller_state.connect()
         self.connected = True
         print("ready to use!")
         await button_push(self.controller_state, 'up')
