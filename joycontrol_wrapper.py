@@ -54,4 +54,11 @@ class joycontrolWrapper:
         rstick = self.controller_state.r_stick_state
         rstick.set_v(value)
         await self.controller_state.send()
-    
+    def nfcIsEmpty(self):
+        if self.controller_state.get_nfc() == None:
+            return True
+        else:
+            return False
+    async def setNfc(self,content):
+        self.controller_state.set_nfc(content)
+        await self.controller_state.send()

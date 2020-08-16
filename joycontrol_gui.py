@@ -4,6 +4,8 @@ from joycontrol_wrapper import joycontrolWrapper
 import asyncio
 import pygame
 import config
+from tkinter.filedialog import askopenfilename # using tkinter for file chooser 
+from tkinter import Tk
 pygame.init()
 window_wdith = 200
 window_height = 200
@@ -19,21 +21,28 @@ def maxMinCap(value,max,min):
 def text_object(text, font):
 	textSurface = font.render(text, True , (0,0,0))
 	return textSurface,textSurface.get_rect()
-def statusText(amount):
+def statusText(content):
 	txtSize = pygame.font.SysFont('arial',22)
-	textSurf,textRect = text_object((amount),txtSize)
+	textSurf,textRect = text_object((content),txtSize)
 	textRect = (10,0)
 	gameDisp.blit(textSurf,textRect)
+def nfcText(content):
+	txtSize = pygame.font.SysFont('arial',22)
+	textSurf,textRect = text_object((content),txtSize)
+	textRect = (10,22)
+	gameDisp.blit(textSurf,textRect)
 async def main():
+    filepath = ''
+    nfcKeyOnce = False
     clock = pygame.time.Clock()
     xMoveCheck = False
     yMoveCheck = False
     cmToggled = False
-    ctrl = False
-    esc = False
+    alt = False
+    eToggle = False
     catchMouse = config.catchMouse
     gameDisp.fill((255,255,255))
-    statusText("loading...")
+    statusText("connecting...")
     pygame.display.update()
     wrapper = joycontrolWrapper()
     await wrapper.init(config.switchMac)
@@ -53,7 +62,7 @@ async def main():
                     await wrapper.moveLsitckH(3840)
                 if event.key == config.lstickKeyClick:
                     await wrapper.pushButton('l_stick')
-                if event.key == config.rstickClick:
+                if event.key == config.rstickKeyClick:
                     await wrapper.pushButton('r_stick')
                 if event.key == config.aKey:
                     await wrapper.pushButton('a')
@@ -84,9 +93,23 @@ async def main():
                 if event.key == config.plusKey:
                     await wrapper.pushButton('plus')
                 if event.key == pygame.K_LALT:
-                    ctrl = True
+                    alt = True
                 if event.key == pygame.K_e:
-                    esc = True
+                    eToggle = True
+                if event.key == config.nfcKey:
+                    if not nfcKeyOnce:
+                        if wrapper.nfcIsEmpty():
+                            _loop = asyncio.get_event_loop()
+                            Tk().withdraw() # without this a blank window will appear after choosing the
+                            filepath = askopenfilename(initialdir="./", title = "Select Amiibo Dump",
+                                                        filetypes=(("Binary","*.bin"),("All Files", "*.*")))
+                            if not filepath == '' and not filepath == ():
+                                with open(filepath, 'rb') as nfcFile:
+                                    content = await _loop.run_in_executor(None, nfcFile.read)
+                                    await wrapper.setNfc(content)
+                        else:
+                            await wrapper.setNfc(None)
+                        nfcKeyOnce = True
             if event.type == pygame.KEYUP:
                 if event.key == config.lstickKeyUp:
                     await wrapper.moveLsitckV(2048)
@@ -98,7 +121,7 @@ async def main():
                     await wrapper.moveLsitckH(2048)
                 if event.key == config.lstickKeyClick:
                     await wrapper.releaseButton('l_stick')
-                if event.key == config.rstickClick:
+                if event.key == config.rstickKeyClick:
                     await wrapper.releaseButton('r_stick')
                 if event.key == config.aKey:
                     await wrapper.releaseButton('a')
@@ -130,18 +153,25 @@ async def main():
                     await wrapper.releaseButton('plus')
                 if event.key == pygame.KMOD_ALT:
                     cmToggled = False
-                    ctrl = False
+                    alt = False
                 if event.key == pygame.K_e:
                     cmToggled = False
-                    esc = False
+                    eToggle = False
+                if event.key == config.nfcKey:
+                    nfcKeyOnce = False
             if event.type == pygame.MOUSEMOTION:
                 if config.mouseAsRstick:
                     dx, dy = event.rel
-                    if dx > 50 or dx < -50:
+                    """
+                    calculating what is worth to send to the switch
+                    if the value is too low wont send anything
+                    if this check didn't exist then the program would lag a lot
+                    """
+                    if dx > 50 or dx < -50: 
                         xMoveCheck = True
                         await wrapper.moveRsitckH(maxMinCap((dx * config.rstickSenstivity * -1) + 2048,4095,0))
                     else:
-                        if xMoveCheck:
+                        if xMoveCheck: # makes sure this happens only once
                             await wrapper.moveRsitckH(2048)
                             xMoveCheck = False
                     if dy > 50 or dy < -50:
@@ -151,7 +181,7 @@ async def main():
                         if yMoveCheck:
                             await wrapper.moveRsitckV(2048)
                             yMoveCheck == False
-        if ctrl and esc and not cmToggled:
+        if alt and eToggle and not cmToggled: 
             catchMouse = not catchMouse
             cmToggled = True
         if catchMouse:
@@ -159,6 +189,10 @@ async def main():
         gameDisp.fill((255,255,255))
         if wrapper.connected:
             statusText("Connected!")
+        if not wrapper.nfcIsEmpty() and not filepath == '':
+            nfcText("nfc: "+filepath)
+        else:
+            nfcText("nfc: None")
         pygame.display.update()
         clock.tick(30)
     pygame.quit()

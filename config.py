@@ -1,6 +1,13 @@
 import pygame
 
-switchMac = "DC:68:EB:71:CF:F1"
+"""
+to change a button's key set the value to pygame.K_(your key) example:
+yKey = pygame.K_e
+if you want to disable a button set the value to None, example:
+rstickKeyClick = None
+"""
+
+switchMac = "DC:68:EB:71:CF:F1" # your mac address here 
 lstickKeyUp = pygame.K_w
 lstickKeyDown = pygame.K_s
 lstickKeyLeft = pygame.K_a
@@ -19,8 +26,9 @@ dpadUp = pygame.K_UP
 dpadDown = pygame.K_DOWN
 dpadLeft = pygame.K_LEFT
 dpadRight = pygame.K_RIGHT
-rstickClick = None
+rstickKeyClick = None
 plusKey = pygame.K_BACKSLASH
-catchMouse = False
-mouseAsRstick = False # experimental
+nfcKey = pygame.K_h
+catchMouse = False # makes sure mouse stays in the middle of the window use alt+e to toggle
+mouseAsRstick = False # experimental, also turn on catch mouse 
 rstickSenstivity = 13
