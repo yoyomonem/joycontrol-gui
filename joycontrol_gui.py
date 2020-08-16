@@ -48,18 +48,24 @@ async def main():
     await wrapper.init(config.switchMac)
     running = True
     while running:
+        if xMoveCheck:
+            await wrapper.setRsitckH(2048)
+            xMoveCheck = False
+        if yMoveCheck:
+            await wrapper.setRsitckV(2048)
+            yMoveCheck = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == config.lstickKeyUp:
-                    await wrapper.moveLsitckV(3840)
+                    await wrapper.setLsitckV(3840)
                 if event.key == config.lstickKeyDown:
-                    await wrapper.moveLsitckV(256)
+                    await wrapper.setLsitckV(256)
                 if event.key == config.lstickKeyLeft:
-                    await wrapper.moveLsitckH(256)
+                    await wrapper.setLsitckH(256)
                 if event.key == config.lstickKeyRight:
-                    await wrapper.moveLsitckH(3840)
+                    await wrapper.setLsitckH(3840)
                 if event.key == config.lstickKeyClick:
                     await wrapper.pushButton('l_stick')
                 if event.key == config.rstickKeyClick:
@@ -112,13 +118,13 @@ async def main():
                         nfcKeyOnce = True
             if event.type == pygame.KEYUP:
                 if event.key == config.lstickKeyUp:
-                    await wrapper.moveLsitckV(2048)
+                    await wrapper.setLsitckV(2048)
                 if event.key == config.lstickKeyDown:
-                    await wrapper.moveLsitckV(2048)
+                    await wrapper.setLsitckV(2048)
                 if event.key == config.lstickKeyLeft:
-                    await wrapper.moveLsitckH(2048)
+                    await wrapper.setLsitckH(2048)
                 if event.key == config.lstickKeyRight:
-                    await wrapper.moveLsitckH(2048)
+                    await wrapper.setLsitckH(2048)
                 if event.key == config.lstickKeyClick:
                     await wrapper.releaseButton('l_stick')
                 if event.key == config.rstickKeyClick:
@@ -169,18 +175,10 @@ async def main():
                     """
                     if dx > 50 or dx < -50: 
                         xMoveCheck = True
-                        await wrapper.moveRsitckH(maxMinCap((dx * config.rstickSenstivity * -1) + 2048,4095,0))
-                    else:
-                        if xMoveCheck: # makes sure this happens only once
-                            await wrapper.moveRsitckH(2048)
-                            xMoveCheck = False
+                        await wrapper.setRsitckH(maxMinCap((dx * config.rstickSenstivity * -1) + 2048,4095,0))
                     if dy > 50 or dy < -50:
                         yMoveCheck = True
-                        await wrapper.moveRsitckV(maxMinCap((dy * config.rstickSenstivity) + 2048,4095,0))
-                    else:
-                        if yMoveCheck:
-                            await wrapper.moveRsitckV(2048)
-                            yMoveCheck == False
+                        await wrapper.setRsitckV(maxMinCap((dy * config.rstickSenstivity) + 2048,4095,0))
         if alt and eToggle and not cmToggled: 
             catchMouse = not catchMouse
             cmToggled = True
