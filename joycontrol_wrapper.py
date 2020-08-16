@@ -54,16 +54,16 @@ class joycontrolWrapper:
         rstick = self.controller_state.r_stick_state
         rstick.set_v(value)
         await self.controller_state.send()
-    async def getLsitckH(self,value):
+    async def getLsitckH(self):
         lstick = self.controller_state.l_stick_state
         return lstick.get_h()
-    async def getLsitckV(self,value):
+    async def getLsitckV(self):
         lstick = self.controller_state.l_stick_state
         return lstick.get_v()
-    async def getRsitckH(self,value):
+    async def getRsitckH(self):
         rstick = self.controller_state.r_stick_state
         return rstick.get_h()
-    async def getRsitckV(self,value):
+    async def getRsitckV(self):
         rstick = self.controller_state.r_stick_state
         return rstick.get_v()
     def nfcIsEmpty(self):
