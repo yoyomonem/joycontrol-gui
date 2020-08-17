@@ -280,7 +280,7 @@ async def _main(args):
         # prepare the the emulated controller
         factory = controller_protocol_factory(controller, spi_flash=spi_flash)
         ctl_psm, itr_psm = 17, 19
-        transport, protocol = await create_hid_server(factory, reconnect_bt_addr=args.reconnect_bt_addr,
+        transport, protocol, macAddress = await create_hid_server(factory, reconnect_bt_addr=args.reconnect_bt_addr,
                                                       ctl_psm=ctl_psm,
                                                       itr_psm=itr_psm, capture_file=capture_file,
                                                       device_id=args.device_id)
