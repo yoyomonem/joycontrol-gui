@@ -75,3 +75,5 @@ class joycontrolWrapper:
     async def setNfc(self,content):
         self.controller_state.set_nfc(content)
         await self.controller_state.send()
+    async def ctrlSend(self):
+        await self.controller_state.send()
