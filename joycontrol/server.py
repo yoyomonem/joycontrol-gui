@@ -40,7 +40,7 @@ async def create_hid_server(protocol_factory, ctl_psm=17, itr_psm=19, device_id=
     :returns transport for input reports and protocol which handles incoming output reports
     """
     protocol = protocol_factory()
-
+    macAddress = reconnect_bt_addr
     if reconnect_bt_addr is None:
         ctl_sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
         itr_sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
@@ -95,6 +95,7 @@ async def create_hid_server(protocol_factory, ctl_psm=17, itr_psm=19, device_id=
 
         loop = asyncio.get_event_loop()
         client_ctl, ctl_address = await loop.sock_accept(ctl_sock)
+        macAddress = ctl_address[0]
         logger.info(f'Accepted connection at psm {ctl_psm} from {ctl_address}')
         client_itr, itr_address = await loop.sock_accept(itr_sock)
         logger.info(f'Accepted connection at psm {itr_psm} from {itr_address}')
@@ -128,4 +129,4 @@ async def create_hid_server(protocol_factory, ctl_psm=17, itr_psm=19, device_id=
         pass
     """
 
-    return protocol.transport, protocol
+    return protocol.transport, protocol,macAddress

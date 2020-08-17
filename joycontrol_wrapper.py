@@ -21,13 +21,14 @@ class joycontrolWrapper:
         self.controller = Controller.PRO_CONTROLLER
         factory = controller_protocol_factory(self.controller, spi_flash=self.spi_flash)
         ctl_psm, itr_psm = 17, 19
-        self.transport, self.protocol = await create_hid_server(factory, reconnect_bt_addr=mac,
+        self.transport, self.protocol, self.macAddress = await create_hid_server(factory, reconnect_bt_addr=mac,
                                                      ctl_psm=ctl_psm,
                                                      itr_psm=itr_psm,
                                                      )
         self.controller_state = self.protocol.get_controller_state()
-        print("connected to switch initializing controller data")
+        print("found switch initializing controller data")
         await self.controller_state.connect()
+        print(self.macAddress)
         self.connected = True
         print("ready to use!")
     async def pushButton(self,button):
