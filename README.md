@@ -33,7 +33,7 @@ sudo python3 joycontrol.gui.py
 ```
 and navigate to `Change Grip/Order` on your switch and wait for the program to connect
 
-once connected the program will print out the bluetooth(not available from the system settings) mac address of the switch in the terminal, copy it and go to the `config.py` file and set the `switchMac` variable to your switch's mac address:
+once connected the program will print out the bluetooth mac address (not available from the system settings) of the switch in the terminal, copy it and go to the `config.py` file and set the `switchMac` variable to your switch's mac address:
 ```python
 switchMac = "AA:AA:AA:AA:AA"
 # replace AA:AA:AA:AA:AA with your mac address
