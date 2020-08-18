@@ -7,7 +7,7 @@ if you want to disable a button set the value to None, example:
 rstickKeyClick = None
 """
 
-switchMac = "DC:68:EB:71:CF:F1" # your mac address here 
+switchMac = None # your mac address here 
 lstickKeyUp = pygame.K_w
 lstickKeyDown = pygame.K_s
 lstickKeyLeft = pygame.K_a
