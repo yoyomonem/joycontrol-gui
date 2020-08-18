@@ -1,4 +1,4 @@
-# joycontrol
+# joycontrol-gui
 Emulate Nintendo Switch Controllers over Bluetooth.
 
 Tested on Ubuntu 19.10, and with Raspberry Pi 3B+ and 4B Raspbian GNU/Linux 10 (buster)
@@ -7,7 +7,7 @@ Tested on Ubuntu 19.10, and with Raspberry Pi 3B+ and 4B Raspbian GNU/Linux 10 (
 Emulation of JOYCON_R, JOYCON_L and PRO_CONTROLLER. Able to send:
 - button commands
 - stick state
-- nfc data
+- nfc data (WIP)
 
 ## Installation
 - Install dependencies
@@ -26,27 +26,21 @@ sudo pip3 install .
 ```
 - Consider to disable the bluez "input" plugin, see [#8](https://github.com/mart1nro/joycontrol/issues/8)
 
-## Command line interface example
-- Run the script
+## GUI usage
+first run the `joycontrol_gui.py` file with sudo:
 ```bash
-sudo python3 run_controller_cli.py PRO_CONTROLLER
+sudo python3 joycontrol.gui.py
 ```
-This will create a PRO_CONTROLLER instance waiting for the Switch to connect.
+and navigate to `Change Grip/Order` on your switch and wait for the program to connect
 
-- Open the "Change Grip/Order" menu of the Switch
+once connected the program will print out the bluetooth(not available from the system settings) mac address of the switch in the terminal, copy it and go to the `config.py` file and set the `switchMac` variable to your switch's mac address:
+```python
+switchMac = "AA:AA:AA:AA:AA"
+# replace AA:AA:AA:AA:AA with your mac address
+```
+after configuring this you dont need to use sudo anymore and the program will automatically connect to your switch upon execution
 
-The Switch only pairs with new controllers in the "Change Grip/Order" menu.
-
-Note: If you already connected an emulated controller once, you can use the reconnect option of the script (-r "\<Switch Bluetooth Mac address>").
-This does not require the "Change Grip/Order" menu to be opened. You can find out a paired mac address using the "bluetoothctl" system command.
-
-- After connecting, a command line interface is opened. Note: Press \<enter> if you don't see a prompt.
-
-Call "help" to see a list of available commands.
-
-- If you call "test_buttons", the emulated controller automatically navigates to the "Test Controller Buttons" menu. 
-
-
+`config.py` is also where you change the keybindings of the  program. examples of how to change it keybinding can be found in the file itself
 ## Issues
 - Some bluetooth adapters seem to cause disconnects for reasons unknown, try to use an usb adapter instead 
 - Incompatibility with Bluetooth "input" plugin requires a bluetooth restart, see [#8](https://github.com/mart1nro/joycontrol/issues/8)
